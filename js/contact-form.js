@@ -77,11 +77,18 @@ async function submitForm() {
 
   try {
     const formData = new FormData(form);
+    console.log('FormData creado con campos:', Array.from(formData.entries()));
 
     const response = await fetch('https://formspree.io/f/mykvoloo', {
       method: 'POST',
       body: formData
     });
+
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+
+    const responseText = await response.text();
+    console.log('Response text:', responseText);
 
     if (response.ok || response.status === 200 || response.status === 201) {
       button.innerHTML = '<span>✓ Mensaje enviado</span>';
@@ -99,6 +106,7 @@ async function submitForm() {
     }
   } catch (error) {
     console.error('Error en formulario:', error);
+    console.error('Stack:', error.stack);
     button.innerHTML = '<span>Error al enviar</span>';
     button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
 
