@@ -77,20 +77,14 @@ async function submitForm() {
 
   try {
     const formData = new FormData(form);
-    console.log('FormData creado con campos:', Array.from(formData.entries()));
 
     const response = await fetch('https://formspree.io/f/mykvoloo', {
       method: 'POST',
       body: formData
     });
 
-    console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
-
-    const responseText = await response.text();
-    console.log('Response text:', responseText);
-
-    if (response.ok || response.status === 200 || response.status === 201) {
+    // Formspree responde exitosamente con status 200 o 201
+    if (response.status === 200 || response.status === 201 || response.ok) {
       button.innerHTML = '<span>✓ Mensaje enviado</span>';
       button.style.background = 'linear-gradient(135deg, var(--secondary) 0%, #25a895 100%)';
 
@@ -102,11 +96,18 @@ async function submitForm() {
         button.style.background = '';
       }, 3000);
     } else {
-      throw new Error('Error en la respuesta del servidor: ' + response.status);
+      // Si no es 200/201, mostrar error
+      button.innerHTML = '<span>Error al enviar</span>';
+      button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
+
+      setTimeout(() => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        button.style.background = '';
+      }, 3000);
     }
   } catch (error) {
-    console.error('Error en formulario:', error);
-    console.error('Stack:', error.stack);
+    // Error de red o JavaScript
     button.innerHTML = '<span>Error al enviar</span>';
     button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
 
