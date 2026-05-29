@@ -80,13 +80,10 @@ async function submitForm() {
 
     const response = await fetch('https://formspree.io/f/mykvoloo', {
       method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
+      body: formData
     });
 
-    if (response.ok) {
+    if (response.ok || response.status === 200 || response.status === 201) {
       button.innerHTML = '<span>✓ Mensaje enviado</span>';
       button.style.background = 'linear-gradient(135deg, var(--secondary) 0%, #25a895 100%)';
 
@@ -98,9 +95,10 @@ async function submitForm() {
         button.style.background = '';
       }, 3000);
     } else {
-      throw new Error('Error en la respuesta del servidor');
+      throw new Error('Error en la respuesta del servidor: ' + response.status);
     }
   } catch (error) {
+    console.error('Error en formulario:', error);
     button.innerHTML = '<span>Error al enviar</span>';
     button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
 
