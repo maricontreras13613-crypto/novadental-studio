@@ -67,27 +67,49 @@ function validateField(field) {
   return isValid || !value || fieldName === 'telefono';
 }
 
-function submitForm() {
+async function submitForm() {
   const form = document.getElementById('contactForm');
   const button = form.querySelector('.btn-submit');
   const originalText = button.innerHTML;
 
-  // Deshabilitar botón
   button.disabled = true;
   button.innerHTML = '<span>Enviando...</span>';
 
-  // Simular envío (reemplazar con tu endpoint real)
-  setTimeout(() => {
-    button.innerHTML = '<span>✓ Mensaje enviado</span>';
-    button.style.background = 'linear-gradient(135deg, var(--secondary) 0%, #25a895 100%)';
-    
-    setTimeout(() => {
+  try {
+    const formData = new FormData(form);
+
+    const response = await fetch('https://formspree.io/f/mykvoloo', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      button.innerHTML = '<span>✓ Mensaje enviado</span>';
+      button.style.background = 'linear-gradient(135deg, var(--secondary) 0%, #25a895 100%)';
+
       form.reset();
+
+      setTimeout(() => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        button.style.background = '';
+      }, 3000);
+    } else {
+      throw new Error('Error en la respuesta del servidor');
+    }
+  } catch (error) {
+    button.innerHTML = '<span>Error al enviar</span>';
+    button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
+
+    setTimeout(() => {
       button.disabled = false;
       button.innerHTML = originalText;
       button.style.background = '';
-    }, 2000);
-  }, 1500);
+    }, 3000);
+  }
 }
 
 // Agregar estilo para campos con error
