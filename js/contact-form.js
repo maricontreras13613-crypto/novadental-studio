@@ -83,6 +83,9 @@ async function submitForm() {
       body: formData
     });
 
+    console.log('Status:', response.status);
+    console.log('OK:', response.ok);
+
     // Formspree responde exitosamente con status 200 o 201
     if (response.status === 200 || response.status === 201 || response.ok) {
       button.innerHTML = '<span>✓ Mensaje enviado</span>';
@@ -108,6 +111,7 @@ async function submitForm() {
     }
   } catch (error) {
     // Error de red o JavaScript
+    console.error(error);
     button.innerHTML = '<span>Error al enviar</span>';
     button.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%)';
 
